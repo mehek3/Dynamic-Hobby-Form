@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Hobby Form</title>
+  <style>
+    .hobby-input {
+      margin-bottom: 10px;
+    }
+    .add-hobby-button {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.16.6/babel.min.js"></script>
+
+  <script type="text/babel">
+    function HobbyInput({ index, hobby, onChange }) {
+      return (
+        <div className="hobby-input">
+          <input
+            type="text"
+            value={hobby}
+            onChange={(event) => onChange(index, event.target.value)}
+          />
+        </div>
+      );
+    }
+
+    function AddHobbyButton({ onClick }) {
+      return (
+        <button className="add-hobby-button" onClick={onClick}>
+          Add Hobby
+        </button>
+      );
+    }
+
+    function DynamicForm() {
+      const [hobbies, setHobbies] = React.useState(['']);
+
+      const handleHobbyChange = (index, newValue) => {
+        const updatedHobbies = [...hobbies];
+        updatedHobbies[index] = newValue;
+        setHobbies(updatedHobbies);
+      };
+
+      const handleAddHobby = () => {
+        setHobbies([...hobbies, '']);
+      };
+
+      const handleRemoveHobby = (index) => {
+        const updatedHobbies = [...hobbies];
+        updatedHobbies.splice(index, 1);
+        setHobbies(updatedHobbies);
+      };
+
+      const handleSubmit = (event) => {
+        event.preventDefault();
+        console.log('Hobbies:', hobbies);
+      };
+
+      return (
+        <form onSubmit={handleSubmit}>
+          {hobbies.map((hobby, index) => (
+            <div key={index}>
+              <HobbyInput
+                index={index}
+                hobby={hobby}
+                onChange={handleHobbyChange}
+              />
+              {index !== 0 && (
+                <button
+                  type="button"
+                  onClick={() => handleRemoveHobby(index)}
+                >
+                  Remove Hobby
+                </button>
+              )}
+            </div>
+          ))}
+          <AddHobbyButton onClick={handleAddHobby} />
+          <button type="submit">Submit</button>
+        </form>
+      );
+    }
+
+    ReactDOM.render(<DynamicForm />, document.getElementById('root'));
+  </script>
+</body>
+</html>
